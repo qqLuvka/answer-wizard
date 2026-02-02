@@ -1,0 +1,31 @@
+name: Build Windows Portable EXE
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build portable EXE
+        run: npm run dist:portable
+        env:
+          VITE_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Upload portable EXE
+        uses: actions/upload-artifact@v3
+        with:
+          name: ReplyWizardAI-Portable-Windows
+          path: release/*.exe
